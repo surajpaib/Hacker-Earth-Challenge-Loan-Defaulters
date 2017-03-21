@@ -33,7 +33,6 @@ class Model(object):
         self.model.fit(self.X_train, self.y_train)
         print "Training Accuracy: {0}".format(self.model.score(self.X_train, self.y_train))
         print "Validation Accuracy: {0}".format(self.model.score(self.X_test, self.y_test))
-        print "AUC ROC SCORE {0} ".format(roc_auc_score(self.y_test, self.model.predict(self.X_test)))
         joblib.dump(self.model, 'rf_model.pkl')
 
 
@@ -66,9 +65,19 @@ class Model(object):
         print " Training input shape : {0}, Target shape: {1}".format(np.shape(self.X_train), np.shape(self.y_train))
         print "Validation input shape : {0}, Target shape: {1}".format(np.shape(self.X_test), np.shape(self.y_test))
 
-    def randomforest_initialize(self, estimators, depth):
-        forest = RandomForestClassifier(verbose=True, n_jobs= -1 )
-        self.model = GridSearchCV(forest, param_grid= {'n_estimators': estimators, 'max_depth': depth}, scoring=self.auc_scorer, verbose=True)
+    def randomforest_initialize(self, estimators, depth, leaf_nodes, features):
+        """
+        Tuning parameters for Random Forests
+        
+        
+        :param estimators: This is the number of trees you want to build before taking the maximum voting or averages of predictions
+        :param depth: Max depth of each tree
+        :param leaf_nodes: A smaller leaf makes the model more prone to capturing noise in train data
+        :param features: These are the maximum number of features Random Forest is allowed to try in individual tree
+        :return: 
+        """
+        forest = RandomForestClassifier(verbose=True, n_jobs= -1 , random_state=3)
+        self.model = GridSearchCV(forest, param_grid= {'n_estimators': estimators, 'max_depth': depth, 'max_features': features, 'min_samples_leaf': leaf_nodes }, scoring=self.auc_scorer, verbose=True)
 
     def adaboost_initialize(self, estimator_range, learning_rate):
         adaboost = AdaBoostClassifier()
@@ -83,7 +92,7 @@ def run():
     model = Model()
     model.load_dataset()
     model.split_dataset()
-    model.randomforest_initialize(estimators=[100], depth= [7])
+    model.randomforest_initialize(estimators=[500], depth=[1000], leaf_nodes=[50], features= ['sqrt'])
     model.train_model()
 
 if __name__ == "__main__":
