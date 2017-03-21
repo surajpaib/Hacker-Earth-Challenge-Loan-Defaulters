@@ -66,9 +66,9 @@ class Model(object):
         print " Training input shape : {0}, Target shape: {1}".format(np.shape(self.X_train), np.shape(self.y_train))
         print "Validation input shape : {0}, Target shape: {1}".format(np.shape(self.X_test), np.shape(self.y_test))
 
-    def randomforest_initialize(self, estimators):
-        forest = RandomForestClassifier(verbose=True, n_jobs= -1)
-        self.model = GridSearchCV(forest, param_grid= {'n_estimators': estimators}, scoring=self.auc_scorer, verbose=True)
+    def randomforest_initialize(self, estimators, depth):
+        forest = RandomForestClassifier(verbose=True, n_jobs= -1 )
+        self.model = GridSearchCV(forest, param_grid= {'n_estimators': estimators, 'max_depth': depth}, scoring=self.auc_scorer, verbose=True)
 
     def adaboost_initialize(self, estimator_range, learning_rate):
         adaboost = AdaBoostClassifier()
@@ -83,7 +83,7 @@ def run():
     model = Model()
     model.load_dataset()
     model.split_dataset()
-    model.gradient_boost_initialize(estimators=[100], lr=[1], depth= [7])
+    model.randomforest_initialize(estimators=[100], depth= [7])
     model.train_model()
 
 if __name__ == "__main__":
