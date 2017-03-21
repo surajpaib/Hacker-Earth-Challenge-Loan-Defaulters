@@ -57,8 +57,18 @@ docs/_build/
 # PyBuilder
 target/
 
+<<<<<<< HEAD
 *.csv
 
 *.pkl
 
 *.h5
+=======
+*.csv#
+
+Hacker Earth Challenge/sample_submission\.csv
+
+Hacker Earth Challenge/test_indessa\.csv
+
+Hacker Earth Challenge/train_indessa\.csv
+>>>>>>> master
