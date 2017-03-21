@@ -24,9 +24,9 @@ class Model(object):
         self.auc_scorer = make_scorer(roc_auc_score, greater_is_better=True)
 
     def load_dataset(self):
-        with open("/home/suraj/Repositories/Hacker Earth Challenge/x_dataset.pkl", "rb") as dataset:
+        with open("/home/suraj/Repositories/Hacker Earth Challenge/datasets/x_dataset.pkl", "rb") as dataset:
             self.x = pickle.load(dataset)
-        with open("/home/suraj/Repositories/Hacker Earth Challenge/y_dataset.pkl", "rb") as dataset:
+        with open("/home/suraj/Repositories/Hacker Earth Challenge/datasets/y_dataset.pkl", "rb") as dataset:
             self.y = pickle.load(dataset)
 
     def train_model(self):
