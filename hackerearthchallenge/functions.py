@@ -1,5 +1,5 @@
 import pandas as pd
-
+import us
 # Mapping for grade assigned by bank
 grade_map = {
     'A1': 0,
@@ -103,6 +103,11 @@ def remove_redundant_fields(dataframe, *args):
 
     return dataframe
 # Convert text values to numerical categories
+
+
+def convert_states(state):
+    state_object = us.states.lookup(state)
+    return int(state_object.fips)
 
 
 def transform_columns(dataframe):

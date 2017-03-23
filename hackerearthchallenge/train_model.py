@@ -32,7 +32,7 @@ class Model(object):
 
     def train_model(self):
         self.model.fit(self.X_train, self.y_train)
-        print sorted(self.model.cv_results_.keys())
+        print self.model.best_params_
         print "Training Accuracy: {0}".format(self.model.score(self.X_train, self.y_train))
         print "Validation Accuracy: {0}".format(self.model.score(self.X_test, self.y_test))
         joblib.dump(self.model, 'rf_model.pkl')
@@ -63,7 +63,7 @@ class Model(object):
         model.save('model.h5')
 
     def split_dataset(self):
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.x, self.y, test_size=0.3, random_state=3)
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.x, self.y, test_size=0.2, random_state=3)
         print " Training input shape : {0}, Target shape: {1}".format(np.shape(self.X_train), np.shape(self.y_train))
         print "Validation input shape : {0}, Target shape: {1}".format(np.shape(self.X_test), np.shape(self.y_test))
 
@@ -78,7 +78,7 @@ class Model(object):
         :param features: These are the maximum number of features Random Forest is allowed to try in individual tree
         :return: 
         """
-        forest = RandomForestClassifier(verbose=True, n_jobs= -1, random_state=3)
+        forest = RandomForestClassifier(verbose=True, n_jobs= 4, random_state=3)
         self.model = GridSearchCV(forest, param_grid= {'n_estimators': estimators, 'max_depth': depth, 'max_features': features, 'min_samples_leaf': leaf_nodes }, verbose=True)
 
     def adaboost_initialize(self, estimator_range, learning_rate):
@@ -95,7 +95,7 @@ class Model(object):
                                                    'solver': optimizer, 'alpha': regularization,
                                                    'batch_size': minit_batch, 'learning_rate': lr,
                                                    'max_iter': iterations, 'learning_rate_init': lr_init
-        })
+        }, verbose=True)
 
 
 
@@ -103,7 +103,7 @@ def run():
     model = Model()
     model.load_dataset()
     model.split_dataset()
-    model.neural_network_initialize(hidden_layer=[5, 10, 20, 25], optimizer=['sgd'], regularization=[0.001, 0.001], lr= ['adaptive'], lr_init= [0.01, 0.001], minit_batch=[20000], iterations=[500] )
+    model.randomforest_initialize(estimators=[500], depth=[500], leaf_nodes=[2], features=[None])
     model.train_model()
 
 if __name__ == "__main__":
