@@ -7,6 +7,7 @@ from sklearn.model_selection import GridSearchCV
 import numpy as np
 import h5py
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn.externals import joblib
 from sklearn.metrics import roc_auc_score, make_scorer
 from sklearn.model_selection import train_test_split
@@ -31,6 +32,7 @@ class Model(object):
 
     def train_model(self):
         self.model.fit(self.X_train, self.y_train)
+        print sorted(self.model.cv_results_.keys())
         print "Training Accuracy: {0}".format(self.model.score(self.X_train, self.y_train))
         print "Validation Accuracy: {0}".format(self.model.score(self.X_test, self.y_test))
         joblib.dump(self.model, 'rf_model.pkl')
@@ -87,12 +89,21 @@ class Model(object):
         gdboost = GradientBoostingClassifier(verbose=True)
         self.model = GridSearchCV(gdboost, param_grid={'n_estimators': estimators, 'learning_rate': lr , 'max_depth': depth}, scoring= self.auc_scorer, verbose=True, n_jobs=-1)
 
+    def neural_network_initialize(self, hidden_layer, optimizer, regularization, minit_batch, lr, iterations, lr_init):
+        net = MLPClassifier(verbose=True, random_state= 3)
+        self.model = GridSearchCV(net, param_grid={'hidden_layer_sizes': hidden_layer,
+                                                   'solver': optimizer, 'alpha': regularization,
+                                                   'batch_size': minit_batch, 'learning_rate': lr,
+                                                   'max_iter': iterations, 'learning_rate_init': lr_init
+        })
+
+
 
 def run():
     model = Model()
     model.load_dataset()
     model.split_dataset()
-    model.randomforest_initialize(estimators=[300], depth=[300], leaf_nodes=[100], features= ['sqrt'])
+    model.neural_network_initialize(hidden_layer=[5, 10, 20, 25], optimizer=['sgd'], regularization=[0.001, 0.001], lr= ['adaptive'], lr_init= [0.01, 0.001], minit_batch=[20000], iterations=[500] )
     model.train_model()
 
 if __name__ == "__main__":
