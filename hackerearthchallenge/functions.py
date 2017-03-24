@@ -99,7 +99,10 @@ def remove_redundant_fields(dataframe, *args):
     :return:
     """
     for arg in args:
-        del dataframe[arg]
+        try:
+            del dataframe[arg]
+        finally:
+            print "Field does not exist or is already deleted {0}".format(arg)
 
     return dataframe
 # Convert text values to numerical categories

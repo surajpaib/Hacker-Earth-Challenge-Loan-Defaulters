@@ -78,7 +78,7 @@ class Model(object):
         :param features: These are the maximum number of features Random Forest is allowed to try in individual tree
         :return: 
         """
-        forest = RandomForestClassifier(verbose=True, n_jobs= 4, random_state=3)
+        forest = RandomForestClassifier(verbose=True, n_jobs= -1, random_state=3)
         self.model = GridSearchCV(forest, param_grid= {'n_estimators': estimators, 'max_depth': depth, 'max_features': features, 'min_samples_leaf': leaf_nodes }, verbose=True)
 
     def adaboost_initialize(self, estimator_range, learning_rate):
@@ -103,7 +103,7 @@ def run():
     model = Model()
     model.load_dataset()
     model.split_dataset()
-    model.randomforest_initialize(estimators=[500], depth=[500], leaf_nodes=[2], features=[None])
+    model.randomforest_initialize(estimators=[100], depth=[10], leaf_nodes=[4], features=[None])
     model.train_model()
 
 if __name__ == "__main__":
