@@ -103,7 +103,8 @@ def run():
     model = Model()
     model.load_dataset()
     model.split_dataset()
-    model.randomforest_initialize(estimators=[1000], depth=[200], leaf_nodes=[4], features=[None])
+    # Add training method here
+    # model.randomforest_initialize(estimators=[1000], depth=[200], leaf_nodes=[4], features=[None])
     model.train_model()
 
 if __name__ == "__main__":
